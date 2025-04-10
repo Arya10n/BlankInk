@@ -1,27 +1,25 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Loader } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import Input from '../components/Input';
+import { useAuthStore } from '../store/authStore';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const login = useAuthStore(state => state.login);
+  const isLoading = useAuthStore(state => state.isLoading);
+  const error = useAuthStore(state => state.error);
+  const navigate = useNavigate();
 
   const handleLogin = async e => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    setTimeout(() => {
-      if (email === 'test@example.com' && password === 'password') {
-        console.log('Logged in');
-      } else {
-        setError('Invalid email or password');
-      }
-      setIsLoading(false);
-    }, 1500);
+    try {
+      await login(email, password);
+      navigate('/'); // redirect after login
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -56,6 +54,7 @@ const LoginPage = () => {
                 Forgot password?
               </Link>
             </div>
+
             {error && (
               <p className='text-red-500 font-semibold mb-2'>{error}</p>
             )}

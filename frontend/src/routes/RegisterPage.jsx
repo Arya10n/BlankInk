@@ -1,29 +1,25 @@
 import { useState } from 'react';
 import { Mail, Lock, User, Loader } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
+import { useAuthStore } from '../store/authStore';
 
 const RegisterPage = () => {
-  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { signup, error, isLoading } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleRegister = async e => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
 
-    // Simulated registration
-    setTimeout(() => {
-      if (email && password && fullName) {
-        console.log('Registered:', { fullName, email });
-      } else {
-        setError('Please fill in all fields');
-      }
-      setIsLoading(false);
-    }, 1500);
+    try {
+      await signup(email, password, username);
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -39,8 +35,8 @@ const RegisterPage = () => {
               icon={User}
               type='text'
               placeholder='Full Name'
-              value={fullName}
-              onChange={e => setFullName(e.target.value)}
+              value={username}
+              onChange={e => setUsername(e.target.value)}
             />
 
             <Input
@@ -58,9 +54,8 @@ const RegisterPage = () => {
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-
             {error && (
-              <p className='text-red-500 font-semibold mb-2'>{error}</p>
+              <p className='text-red-500 font-semibold mt-2'>{error}</p>
             )}
 
             <button
