@@ -8,7 +8,9 @@ function Navbar() {
     <div className='w-full h-16 md:h-20 flex items-center justify-between'>
       {/* LOGO */}
       <div className='flex ictems-center gap-4 text-2xl font-bold'>
-        <img src='/logo.png' alt='logo' className='w-8 h-8' />
+        <Link to='/'>
+          <img src='/logo.png' alt='logo' className='w-8 h-8' />
+        </Link>
         <span>BlankInk</span>
       </div>
       {/* MOBILE MENU */}
